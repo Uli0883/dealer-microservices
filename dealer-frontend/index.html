@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dealer Evaluation</title>
+</head>
+<body>
+    <h1>Dealer Evaluation</h1>
+    <div>
+        <label>Select Product:</label>
+        <select id="productSelect">
+            <option value="">-- Select --</option>
+        </select>
+    </div>
+    <div id="dealersContainer"></div>
+    <div id="priceContainer"></div>
+
+    <script>
+        // URLs de los microservicios (reemplaza con las URLs reales de Render)
+        const productDetailsUrl = 'PRODUCT_DETAILS_URL';
+        const dealerPricesUrl = 'DEALER_PRICES_URL';
+
+        const productSelect = document.getElementById('productSelect');
+        const dealersContainer = document.getElementById('dealersContainer');
+        const priceContainer = document.getElementById('priceContainer');
+
+        // Cargar productos
+        fetch(`${productDetailsUrl}/product/1`)
+            .then(res => res.json())
+            .then(product => {
+                // Aquí iría la lógica para cargar todos los productos
+                // Simulamos con datos estáticos
+                const products = [
+                    { id: 1, name: "Laptop" },
+                    { id: 2, name: "Smartphone" },
+                    { id: 3, name: "Tablet" }
+                ];
+                products.forEach(p => {
+                    const option = document.createElement('option');
+                    option.value = p.id;
+                    option.textContent = p.name;
+                    productSelect.appendChild(option);
+                });
+            });
+
+        productSelect.addEventListener('change', function() {
+            const productId = this.value;
+            if (!productId) {
+                dealersContainer.innerHTML = '';
+                priceContainer.innerHTML = '';
+                return;
+            }
+            // Obtener distribuidores y precios
+            fetch(`${dealerPricesUrl}/prices/${productId}`)
+                .then(res => res.json())
+                .then(data => {
+                    let html = '<h3>Dealers:</h3><ul>';
+                    data.forEach(item => {
+                        html += `<li>${item.dealer} - $${item.price}</li>`;
+                    });
+                    html += '</ul>';
+                    dealersContainer.innerHTML = html;
+                    priceContainer.innerHTML = '';
+                });
+        });
+    </script>
+</body>
+</html>
