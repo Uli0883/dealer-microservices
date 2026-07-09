@@ -1,2 +1,2 @@
-Flask==2.2.3
-Werkzeug==2.2.2
+echo "Flask==2.2.3" > product-details/requirements.txt
+echo "Werkzeug==2.2.2" >> product-details/requirements.txt
