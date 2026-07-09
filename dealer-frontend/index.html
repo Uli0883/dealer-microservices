@@ -16,8 +16,8 @@
 
     <script>
         // URLs de los microservicios (reemplaza con las URLs reales de Render)
-        const productDetailsUrl = 'PRODUCT_DETAILS_URL';
-        const dealerPricesUrl = 'DEALER_PRICES_URL';
+        const productDetailsUrl = 'https://product-details.onrender.com';
+        const dealerPricesUrl = 'https://dealer-prices.onrender.com';
 
         const productSelect = document.getElementById('productSelect');
         const dealersContainer = document.getElementById('dealersContainer');
@@ -60,6 +60,7 @@
                     html += '</ul>';
                     dealersContainer.innerHTML = html;
                     priceContainer.innerHTML = '';
+                    
                 });
         });
     </script>
