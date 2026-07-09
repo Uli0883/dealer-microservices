@@ -1,7 +1,11 @@
 from flask import Flask, jsonify
+from flask_cors import CORS  # Importar CORS
 import os
 
+
 app = Flask(__name__)
+
+CORS(app)
 
 products = {
     "1": {"id": 1, "name": "Laptop", "description": "High performance laptop"},
