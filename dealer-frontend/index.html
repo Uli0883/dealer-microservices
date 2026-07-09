@@ -15,54 +15,55 @@
     <div id="priceContainer"></div>
 
     <script>
-        // URLs de los microservicios (reemplaza con las URLs reales de Render)
-        const productDetailsUrl = 'https://product-details.onrender.com';
-        const dealerPricesUrl = 'https://dealer-prices.onrender.com';
+    // URLs de los microservicios
+    const productDetailsUrl = 'https://product-details-9vyo.onrender.com';
+    const dealerPricesUrl = 'https://dealer-prices.onrender.com';
 
-        const productSelect = document.getElementById('productSelect');
-        const dealersContainer = document.getElementById('dealersContainer');
-        const priceContainer = document.getElementById('priceContainer');
+    const productSelect = document.getElementById('productSelect');
+    const dealersContainer = document.getElementById('dealersContainer');
+    const priceContainer = document.getElementById('priceContainer');
 
-        // Cargar productos
-        fetch(`${productDetailsUrl}/product/1`)
+    // Lista de productos fija (coincide con los datos en app.py)
+    const products = [
+        { id: 1, name: "Laptop" },
+        { id: 2, name: "Smartphone" },
+        { id: 3, name: "Tablet" }
+    ];
+
+    // Cargar productos en el menú desplegable
+    products.forEach(p => {
+        const option = document.createElement('option');
+        option.value = p.id;
+        option.textContent = p.name;
+        productSelect.appendChild(option);
+    });
+
+    // Evento al seleccionar un producto
+    productSelect.addEventListener('change', function() {
+        const productId = this.value;
+        if (!productId) {
+            dealersContainer.innerHTML = '';
+            priceContainer.innerHTML = '';
+            return;
+        }
+
+        // Obtener distribuidores y precios
+        fetch(`${dealerPricesUrl}/prices/${productId}`)
             .then(res => res.json())
-            .then(product => {
-                // Aquí iría la lógica para cargar todos los productos
-                // Simulamos con datos estáticos
-                const products = [
-                    { id: 1, name: "Laptop" },
-                    { id: 2, name: "Smartphone" },
-                    { id: 3, name: "Tablet" }
-                ];
-                products.forEach(p => {
-                    const option = document.createElement('option');
-                    option.value = p.id;
-                    option.textContent = p.name;
-                    productSelect.appendChild(option);
+            .then(data => {
+                let html = '<h3>Dealers:</h3><ul>';
+                data.forEach(item => {
+                    html += `<li>${item.dealer} - $${item.price}</li>`;
                 });
-            });
-
-        productSelect.addEventListener('change', function() {
-            const productId = this.value;
-            if (!productId) {
-                dealersContainer.innerHTML = '';
+                html += '</ul>';
+                dealersContainer.innerHTML = html;
                 priceContainer.innerHTML = '';
-                return;
-            }
-            // Obtener distribuidores y precios
-            fetch(`${dealerPricesUrl}/prices/${productId}`)
-                .then(res => res.json())
-                .then(data => {
-                    let html = '<h3>Dealers:</h3><ul>';
-                    data.forEach(item => {
-                        html += `<li>${item.dealer} - $${item.price}</li>`;
-                    });
-                    html += '</ul>';
-                    dealersContainer.innerHTML = html;
-                    priceContainer.innerHTML = '';
-                    
-                });
-        });
-    </script>
+            })
+            .catch(err => {
+                dealersContainer.innerHTML = '<p style="color:red">Error al cargar distribuidores.</p>';
+                console.error(err);
+            });
+    });
+</script>
 </body>
 </html>
