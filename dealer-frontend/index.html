@@ -15,7 +15,7 @@
     <div id="priceContainer"></div>
 
     <script>
-    // URLs de los microservicios
+    // URLs de los microservicios (verifica que sean las correctas)
     const productDetailsUrl = 'https://product-details-9vyo.onrender.com';
     const dealerPricesUrl = 'https://dealer-prices.onrender.com';
 
@@ -47,10 +47,25 @@
             return;
         }
 
+        // Construir la URL completa y mostrarla en consola para depurar
+        const url = `${dealerPricesUrl}/prices/${productId}`;
+        console.log('Fetching URL:', url); // <-- Muestra la URL en consola
+
         // Obtener distribuidores y precios
-        fetch(`${dealerPricesUrl}/prices/${productId}`)
-            .then(res => res.json())
+        fetch(url)
+            .then(response => {
+                console.log('Response status:', response.status); // <-- Muestra el código de estado
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
+                console.log('Data received:', data); // <-- Muestra los datos recibidos
+                if (data.length === 0) {
+                    dealersContainer.innerHTML = '<p>No hay distribuidores para este producto.</p>';
+                    return;
+                }
                 let html = '<h3>Dealers:</h3><ul>';
                 data.forEach(item => {
                     html += `<li>${item.dealer} - $${item.price}</li>`;
@@ -60,10 +75,10 @@
                 priceContainer.innerHTML = '';
             })
             .catch(err => {
-                dealersContainer.innerHTML = '<p style="color:red">Error al cargar distribuidores.</p>';
-                console.error(err);
+                console.error('Error en fetch:', err); // <-- Muestra el error exacto
+                dealersContainer.innerHTML = `<p style="color:red">Error al cargar distribuidores. Detalle: ${err.message}</p>`;
             });
     });
-</script>
+    </script>
 </body>
 </html>
