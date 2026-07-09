@@ -1,15 +1,18 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8080;
 
-const cors = require('cors');
+// CORS manual (más confiable)
 app.use((req, res, next) => {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    if (req.method === 'OPTIONS') {
+        return res.sendStatus(200);
+    }
     next();
 });
+
 const prices = {
     "1": [
         { dealer: "Dealer A", price: 1000 },
